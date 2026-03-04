@@ -1,0 +1,157 @@
+import { IconBadge } from "@/components/icon-badge";
+import { db } from "@/lib/db";
+import { auth } from "@clerk/nextjs/server";
+import { CircleDollarSign, File, LayoutDashboard, ListCheck, ListChecks } from "lucide-react";
+import { redirect } from "next/navigation";
+import { TitleForm } from "./_components/title-form";
+import { DescriptionForm } from "./_components/description-form";
+import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form";
+import { Label } from "radix-ui";
+import { PriceForm } from "./_components/price-form";
+import { AttachmentForm } from "./_components/attachment-form";
+import { ChaptersForm } from "./_components/chapters-form";
+import { Banner } from "@/components/banner";
+import { Actions } from "./_components/actions";
+
+const CourseIdPage = async ({
+    params
+}: { params: Promise<{ courseId: string }> }) => {
+
+    const { userId } = await auth();
+    const { courseId } = await params;
+    if (!userId) {
+        return redirect("/");
+    }
+    const course = await db.course.findUnique({
+        where: {
+            id: courseId,
+            userId,
+        },
+        include: {
+            chapters:{
+                orderBy:{
+                    position:"asc",
+                },
+            },
+            attachments: {
+                orderBy:{
+                    createdAt:"desc"
+                },
+            },
+        },
+    })
+
+    const categories = await db.category.findMany({
+        orderBy:{
+            name:"asc",
+        },
+    });
+
+    console.log(categories);
+
+    if (!course) {
+        return redirect("/")
+    }
+
+    const requiredFields = [
+        course.title,
+        course.description,
+        course.imageUrl,
+        course.price,
+        course.categoryId,
+        course.chapters.some(chapter => chapter.isPublished),
+    ];
+
+    const totalFields = requiredFields.length;
+    const completedFields = requiredFields.filter(Boolean).length;
+    const completionText = `(${completedFields}/${totalFields})`
+
+    const isComplete = requiredFields.every(Boolean);
+
+    return (
+        <>
+        {!course.isPublished && (
+            <div className="mb-6">
+                <Banner variant="warning" label="This course is not published yet. Only you can see it." />
+            </div>
+        )}
+        <div className="p-6 ">
+            <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-y-2">
+                    <h1 className="text-2xl font-medium">Course Setup</h1>
+                    <span className="text-sm text-slate-700 ">complete all fields {completionText}</span>
+                </div>
+                {/* Add actions here */}
+                <Actions 
+                disabled={!isComplete}  
+                courseId={(await params).courseId}
+                isPublished={course.isPublished}
+                />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+                <div>
+                    <div className="flex items-center gap-x-2">
+                        <IconBadge size="sm" icon={LayoutDashboard} />
+                        <h2 className="text-xl">Customize your course</h2>
+                    </div>
+                    <TitleForm
+                        initialData={course}
+                        courseId={course.id}
+                    />
+                    <DescriptionForm
+                        initialData={course}
+                        courseId={course.id}
+                    />
+                    <ImageForm
+                        initialData={course}
+                        courseId={course.id}
+                    />
+                   <CategoryForm
+                         initialData={course}
+                        courseId={course.id}
+                        options={categories.map((category) => ({
+                        label: category.name,
+                        value: category.id,
+                        }))}
+                         />
+                </div>
+                <div className="space-y-6 ">
+                        <div>
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge icon={ListChecks} size={26}/>
+                                <h2 className="text-xl">Course Chapters</h2>
+                            </div>
+                            <ChaptersForm
+                                initialData={course}
+                                courseId={course.id}
+                            />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge icon={CircleDollarSign} size={26}/>
+                                <h2 className="text-xl"> Sell your course</h2>
+                            </div>
+                            <PriceForm 
+                            initialData={course}
+                            courseId={course.id}
+                            />
+                        </div>
+                        <div>
+                             <div className="flex items-center gap-x-2">
+                                <IconBadge icon={File} size={26}/>
+                                <h2 className="text-xl">Resources & Attachment</h2>
+                            </div>
+                              <AttachmentForm
+                        initialData={course}
+                        courseId={course.id}
+                    />
+                        </div>
+                </div>
+            </div>
+        </div>
+        </>
+    );
+}
+
+export default CourseIdPage;
