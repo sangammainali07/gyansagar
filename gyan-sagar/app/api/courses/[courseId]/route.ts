@@ -12,8 +12,9 @@ const videoService = muxClient.video;
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
+  const { courseId } = await params;
     try {
         const { userId } = await auth();        
         if (!userId) {
@@ -22,7 +23,7 @@ export async function DELETE(
 
         const course = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId,
             },
             include: {
@@ -47,7 +48,7 @@ export async function DELETE(
 
         const deletedCourse = await db.course.delete({
             where: {
-                id: params.courseId,
+                id: courseId,
             },
         });
 
@@ -60,11 +61,11 @@ export async function DELETE(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
+    const { courseId } = await params;
     try {
         const { userId } = await auth();
-        const { courseId } = params;
         const values = await req.json();
 
         if (!userId) {

@@ -58,7 +58,7 @@ const CourseIdPage = async ({
         course.title,
         course.description,
         course.imageUrl,
-        course.price,
+        course.price !== null,
         course.categoryId,
         course.chapters.some(chapter => chapter.isPublished),
     ];
@@ -85,7 +85,7 @@ const CourseIdPage = async ({
                 {/* Add actions here */}
                 <Actions 
                 disabled={!isComplete}  
-                courseId={(await params).courseId}
+                courseId={courseId}
                 isPublished={course.isPublished}
                 />
             </div>
@@ -119,7 +119,7 @@ const CourseIdPage = async ({
                 <div className="space-y-6 ">
                         <div>
                             <div className="flex items-center gap-x-2">
-                                <IconBadge icon={ListChecks} size={26}/>
+                                <IconBadge icon={ListChecks} size="sm"/>
                                 <h2 className="text-xl">Course Chapters</h2>
                             </div>
                             <ChaptersForm
@@ -129,7 +129,7 @@ const CourseIdPage = async ({
                         </div>
                         <div>
                             <div className="flex items-center gap-x-2">
-                                <IconBadge icon={CircleDollarSign} size={26}/>
+                                <IconBadge icon={CircleDollarSign} size="sm"/>
                                 <h2 className="text-xl"> Sell your course</h2>
                             </div>
                             <PriceForm 
@@ -139,7 +139,7 @@ const CourseIdPage = async ({
                         </div>
                         <div>
                              <div className="flex items-center gap-x-2">
-                                <IconBadge icon={File} size={26}/>
+                                <IconBadge icon={File} size="sm"/>
                                 <h2 className="text-xl">Resources & Attachment</h2>
                             </div>
                               <AttachmentForm

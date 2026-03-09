@@ -7,8 +7,8 @@ import { CourseSidebar } from "./_components/course-sidebar";
 import { CourseNavbar } from "./_components/course-navbar";
 
 
-const CourseLayout = async ({children,params}:{children:React.ReactNode; params:{courseId:string}}) => {
-
+const CourseLayout = async ({children,params}:{children:React.ReactNode; params: Promise<{courseId:string}>}) => {
+    const { courseId } = await params;
     const {userId} = await auth();
 
     if(!userId) {
@@ -17,7 +17,7 @@ const CourseLayout = async ({children,params}:{children:React.ReactNode; params:
 
     const course = await db.course.findUnique({
         where:{
-            id: params.courseId
+            id: courseId
         },
         include:{
             chapters : {

@@ -4,7 +4,9 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
     req:Request,
-    {params} : {params:{courseId:string ; chapterId:string}}) {
+    { params }: { params: Promise<{ courseId:string ; chapterId:string }> }) {
+  const { courseId, chapterId } = await params;
+
     try{
         const {userId} = await auth(); 
 
@@ -14,7 +16,7 @@ export async function PATCH(
 
         const ownCourse = await db.course.findUnique({
             where:{
-                id:params.courseId,
+                id:courseId,
                 userId
             }
         });
@@ -27,8 +29,8 @@ export async function PATCH(
         // Ensure the chapter exists and belongs to this course
         const chapter = await db.chapter.findUnique({
             where: {
-                id: params.chapterId,
-                courseId: params.courseId,
+                id: chapterId,
+                courseId: courseId,
             },
         });
 
@@ -38,8 +40,8 @@ export async function PATCH(
 
         const unPublishedChapter = await db.chapter.update({
             where: {
-                id: params.chapterId,
-                courseId: params.courseId,
+                id: chapterId,
+                courseId: courseId,
             },
             data: {
                 isPublished: false,
@@ -49,7 +51,7 @@ export async function PATCH(
         // If no other chapters are published, unpublish the course
         const publishedChaptersInCourse = await db.chapter.findMany({
             where: {
-                courseId: params.courseId,
+                courseId: courseId,
                 isPublished: true,
             },
             take: 1,
@@ -57,7 +59,7 @@ export async function PATCH(
 
         if (!publishedChaptersInCourse.length) {
             await db.course.update({
-                where: { id: params.courseId },
+                where: { id: courseId },
                 data: { isPublished: false },
             });
         }

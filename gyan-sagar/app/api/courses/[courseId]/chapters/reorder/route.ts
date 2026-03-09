@@ -5,8 +5,10 @@ import { db } from "@/lib/db";
 
 export async function PUT(
     req:Request,
-    {params} : {params : {courseId:string}}
+    { params }: { params: Promise<{ courseId:string }> }
 ){
+  const { courseId } = await params;
+
     try{
         const {userId} = await auth();
 
@@ -18,7 +20,7 @@ export async function PUT(
 
         const ownCourse = await db.course.findUnique({
             where:{
-                id:params.courseId,
+                id:courseId,
                 userId:userId,
             }
         });

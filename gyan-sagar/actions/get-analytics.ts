@@ -5,7 +5,11 @@ import { db } from "@/lib/db";
 import { Course, Purchase } from "@prisma/client";
 
 type purchaseWithCourse = Purchase & {
-    course: Course;
+    course: {
+        id: string;
+        title: string;
+        price: number | null;
+    };
 }
 
 const groupByCourse = (purchases: purchaseWithCourse[]) => {

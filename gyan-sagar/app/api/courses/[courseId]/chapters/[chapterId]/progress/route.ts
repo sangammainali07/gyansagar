@@ -6,8 +6,10 @@ import { NextResponse } from "next/server";
 
 export async function PUT (
     request: Request,
-    { params }: { params: { courseId: string, chapterId: string } }
+    { params }: { params: Promise<{  courseId: string, chapterId: string  }> }
 ){
+  const { courseId, chapterId } = await params;
+
 
     try {
 
@@ -22,7 +24,7 @@ export async function PUT (
             where: {
                 userId_chapterId: {
                     userId,
-                    chapterId: params.chapterId,
+                    chapterId: chapterId,
                 }
             },
             update: {
@@ -30,7 +32,7 @@ export async function PUT (
             },
             create:{
                 userId,
-                chapterId: params.chapterId,
+                chapterId: chapterId,
                 isCompleted
             }
         });

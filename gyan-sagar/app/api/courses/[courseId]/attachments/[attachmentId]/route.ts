@@ -4,8 +4,9 @@
 
 // export async function DELETE(
 //     req:Request,
-//     {params}:{params : {courseId:string, attachmentId:string}}
+//     { params }: { params: Promise<{ courseId:string, attachmentId:string }> }
 // ) {
+
 //     try{
 //         const {userId} = await auth();
 
@@ -15,7 +16,7 @@
 
 //         const courseOwner = await db.course.findUnique({
 //             where:{
-//                 id:params.courseId,
+//                 id:courseId,
 //                 userId:userId,
 //             }
 //         });
@@ -26,8 +27,8 @@
 
 //         const attachment = await db.attachment.delete({
 //             where:{
-//                 courseId:params.courseId,
-//                 id:params.attachmentId,
+//                 courseId:courseId,
+//                 id:attachmentId,
 //             }
 //         })
 
@@ -47,8 +48,10 @@ import { isTeacher } from "@/lib/teacher";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { courseId: string; attachmentId: string } }
+  { params }: { params: Promise<{  courseId: string; attachmentId: string  }> }
 ) {
+  const { courseId, attachmentId } = await params;
+
   try {
     const { userId } = await auth();
 
@@ -60,7 +63,7 @@ export async function DELETE(
     // 2️⃣ Check if the course belongs to the user
     const courseOwner = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId: userId,
       },
     });
@@ -72,7 +75,7 @@ export async function DELETE(
     // 3️⃣ Delete the attachment (by unique id ONLY)
     await db.attachment.delete({
       where: {
-        id: params.attachmentId,
+        id: attachmentId,
       },
     });
 
