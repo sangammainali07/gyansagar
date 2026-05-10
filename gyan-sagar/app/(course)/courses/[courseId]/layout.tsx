@@ -12,7 +12,7 @@ const CourseLayout = async ({children,params}:{children:React.ReactNode; params:
     const {userId} = await auth();
 
     if(!userId) {
-        return redirect("/");
+        return redirect("/dashboard");
     }
 
     const course = await db.course.findUnique({
@@ -43,7 +43,7 @@ const CourseLayout = async ({children,params}:{children:React.ReactNode; params:
     });
 
     if(!course) {
-        return redirect("/");
+        return redirect("/dashboard");
     };
 
 

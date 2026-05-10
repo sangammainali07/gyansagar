@@ -33,7 +33,7 @@ export const NavbarRoutes = () => {
             </Button>
           </Link>
         ) : isTeacher(userId) ? (
-          <Link href="/teacher/courses">
+          <Link href="/dashboard/teacher/courses">
             <Button size="sm" variant="ghost">
               Teacher mode
             </Button>

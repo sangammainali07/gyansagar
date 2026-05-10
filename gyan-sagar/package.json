@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.37.3",
+    "@dotlottie/react-player": "^1.6.19",
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@mux/mux-node": "^12.8.1",

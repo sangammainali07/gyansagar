@@ -20,7 +20,7 @@ export const CourseSidebar = async ({course, progressCount}:CourseSidebarProps) 
 
 
     if(!userId) {
-        return redirect("/");
+        return redirect("/dashboard");
     }
 
 

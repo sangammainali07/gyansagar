@@ -16,28 +16,28 @@ interface CourseProgressButtonProps {
     isCompleted?: boolean;
 }
 
-export const CourseProgressButton = ({chapterId, courseId, nextChapterId, isCompleted}: CourseProgressButtonProps) => {
+export const CourseProgressButton = ({ chapterId, courseId, nextChapterId, isCompleted }: CourseProgressButtonProps) => {
 
     const router = useRouter();
     const confetti = useConfettiStore();
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
 
-    const onClick = async() => {
+    const onClick = async () => {
 
         try {
             setIsLoading(true);
 
             await axios.put(`/api/courses/${courseId}/chapters/${chapterId}/progress`, {
                 isCompleted: !isCompleted
-                });
-            if(!isCompleted && !nextChapterId) {
+            });
+            if (!isCompleted && !nextChapterId) {
                 confetti.onOpen();
                 // toast.success("Chapter marked as complete");
-            } 
+            }
 
-            if(!isCompleted && nextChapterId) {
-                router.push(`/courses/${courseId}/chapter/${nextChapterId}`);
+            if (!isCompleted && nextChapterId) {
+                router.push(`/dashboard/courses/${courseId}/chapter/${nextChapterId}`);
             }
 
             toast.success("Progress updated successfully");
@@ -45,9 +45,9 @@ export const CourseProgressButton = ({chapterId, courseId, nextChapterId, isComp
             router.refresh();
 
 
-        } catch (error){
+        } catch (error) {
             toast.error("Something went wrong");
-            
+
         } finally {
             setIsLoading(false);
         }
@@ -57,11 +57,11 @@ export const CourseProgressButton = ({chapterId, courseId, nextChapterId, isComp
 
     return (
         <Button
-        onClick={onClick}
-        disabled={isLoading}
-        type="button"
-        variant={isCompleted ? "outline" : "success"}
-        className="w-full md:w-auto"
+            onClick={onClick}
+            disabled={isLoading}
+            type="button"
+            variant={isCompleted ? "outline" : "success"}
+            className="w-full md:w-auto"
         >
             {isCompleted ? "Completed" : "Mark as complete"}
 
