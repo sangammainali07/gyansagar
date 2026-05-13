@@ -72,7 +72,7 @@ const CreatePage = () => {
                                 </FormItem>
                             )}
                         />                      <div className="flex items-center gap-x-2">
-                            <Link href="/dashboard">
+                            <Link href="/dashboard/teacher/courses">
                                 <Button type="button" variant="ghost">Cancel</Button>
                             </Link>
                             <Button type="submit" disabled={!isValid || isSubmitting}>continue</Button>

@@ -3,7 +3,7 @@ import { table } from "console";
 import Link from "next/link"
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 // import { Payment } from "./_components/columns";
@@ -16,7 +16,7 @@ const CoursesPage = async() => {
 
 
    if(!userId){
-    redirect("/dashboard");
+    return redirect("/");
    }
 
    const courses = await db.course.findMany({

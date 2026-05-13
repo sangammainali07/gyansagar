@@ -25,7 +25,7 @@ const CourseIdPage = async (
     });
 
  if(!course) {
-    return redirect("/dashboard");
+    return redirect("/");
  }
 
     // folder contains `chapter` so the redirect can safely include that segment

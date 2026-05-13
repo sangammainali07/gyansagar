@@ -49,7 +49,7 @@ export const VideoPlayer = ({ playbackId, courseId, chapterId, nextChapterId, is
                 router.refresh();
 
                 if (nextChapterId) {
-                    router.push(`/dashboard/courses/${courseId}/chapter/${nextChapterId}`);
+                    router.push(`/courses/${courseId}/chapter/${nextChapterId}`);
                 }
 
             }

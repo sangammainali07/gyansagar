@@ -1,6 +1,6 @@
 import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { CircleDollarSign, File, LayoutDashboard, ListCheck, ListChecks } from "lucide-react";
 import { redirect } from "next/navigation";
 import { TitleForm } from "./_components/title-form";
@@ -21,7 +21,7 @@ const CourseIdPage = async ({
     const { userId } = await auth();
     const { courseId } = await params;
     if (!userId) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
     const course = await db.course.findUnique({
         where: {
@@ -51,7 +51,7 @@ const CourseIdPage = async ({
     console.log(categories);
 
     if (!course) {
-        return redirect("/dashboard")
+        return redirect("/");
     }
 
     const requiredFields = [

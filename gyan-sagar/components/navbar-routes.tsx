@@ -1,20 +1,28 @@
 "use client";
 
-import { SignedIn, useAuth, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { SearchInput } from "./search-input";
 import { isTeacher } from "@/lib/teacher";
+import { UserButton } from "./auth/user-button";
 
-export const NavbarRoutes = () => {
+interface NavbarRoutesProps {
+  user?: {
+    id?: string;
+    role?: any;
+    image?: string | null;
+    name?: string | null;
+  } | null;
+}
+
+export const NavbarRoutes = ({ user }: NavbarRoutesProps) => {
   const pathname = usePathname();
-  const { userId } = useAuth();
 
-  const isTeacherPage = pathname?.startsWith("/teacher");
+  const isTeacherPage = pathname?.startsWith("/dashboard/teacher");
   const isCoursePage = pathname?.includes("/courses");
-  const isSearchPage = pathname === "/search";
+  const isSearchPage = pathname === "/dashboard/search";
 
   return (
     <>
@@ -26,13 +34,13 @@ export const NavbarRoutes = () => {
 
       <div className="flex gap-x-2 ml-auto">
         {isTeacherPage || isCoursePage ? (
-          <Link href="/">
+          <Link href="/dashboard/search">
             <Button size="sm" variant="ghost">
               <LogOut className="h-4 w-4 mr-2" />
               Exit
             </Button>
           </Link>
-        ) : isTeacher(userId) ? (
+        ) : isTeacher(user?.role) ? (
           <Link href="/dashboard/teacher/courses">
             <Button size="sm" variant="ghost">
               Teacher mode
@@ -40,9 +48,12 @@ export const NavbarRoutes = () => {
           </Link>
         ) : null}
 
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
+        {user && (
+          <UserButton 
+            userImage={user.image} 
+            userName={user.name} 
+          />
+        )}
       </div>
     </>
   );

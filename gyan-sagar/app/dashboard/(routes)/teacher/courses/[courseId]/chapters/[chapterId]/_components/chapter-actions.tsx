@@ -32,11 +32,12 @@ export const ChapterActions = ({ disabled, courseId, chapterId, isPublished }: C
             if (isPublished) {
                 await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/unpublish`);
                 toast.success("Chapter Unpublished");
+                router.refresh();
             } else {
                 await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/publish`);
                 toast.success("Chapter Published");
+                router.refresh();
             }
-            router.refresh();
         } catch (error: any) {
             console.log(error);
             toast.error(error.response?.data || "Something went wrong.");

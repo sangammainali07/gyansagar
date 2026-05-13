@@ -1,12 +1,14 @@
 'use client';
 
 import Script from 'next/script';
-import { useAuth, UserButton } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 import Link from 'next/link';
 import { useState } from 'react';
+import { UserButton } from '@/components/auth/user-button';
 
 export default function LandingPage() {
-  const { userId } = useAuth();
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<string | null>("collapseOne");
   return (
@@ -72,9 +74,9 @@ export default function LandingPage() {
 
                     {/* RIGHT AUTH */}
                     <div className="navbar-nav flex flex-col lg:flex-row items-center justify-center gap-6 mt-6 lg:mt-0">
-                      {userId ? (
+                      {session?.user ? (
                         <div className="flex items-center justify-center h-full">
-                          <UserButton afterSignOutUrl="/" />
+                          <UserButton userImage={session.user.image} userName={session.user.name} />
                         </div>
                       ) : (
                         <>
@@ -306,10 +308,20 @@ export default function LandingPage() {
       </a>
 
       {/* JS here */}
-      <Script src="assets/js/bootstrap-5.0.0-beta2.min.js" strategy="lazyOnload"></Script>
-      <Script src="assets/js/tiny-slider.js" strategy="lazyOnload"></Script>
-      <Script src="assets/js/wow.min.js" strategy="lazyOnload"></Script>
-      <Script src="assets/js/main.js" strategy="lazyOnload"></Script>
+      <Script src="/assets/js/bootstrap-5.0.0-beta2.min.js" strategy="afterInteractive"></Script>
+      <Script src="/assets/js/tiny-slider.js" strategy="afterInteractive"></Script>
+      <Script 
+        src="/assets/js/wow.min.js" 
+        strategy="afterInteractive"
+        onLoad={() => {
+          // @ts-ignore
+          if (typeof WOW !== 'undefined') {
+            // @ts-ignore
+            new WOW().init();
+          }
+        }}
+      ></Script>
+      <Script src="/assets/js/main.js" strategy="afterInteractive"></Script>
     </>
   );
 }

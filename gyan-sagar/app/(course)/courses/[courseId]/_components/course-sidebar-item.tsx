@@ -26,8 +26,7 @@ export const CourseSidebarItem = ({ label, id, isCompleted, courseId, isLocked }
     const isActive = pathname?.includes(id);
 
     const onClick = () => {
-        // folder is now named `chapter` so the segment appears in the URL
-        router.push(`/dashboard/courses/${courseId}/chapter/${id}`);
+        router.push(`/courses/${courseId}/chapter/${id}`);
     }
 
     return (

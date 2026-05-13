@@ -1,23 +1,16 @@
 import { db } from "@/lib/db";
 import { isTeacher } from "@/lib/teacher";
-import { auth } from "@clerk/nextjs/server";
-
+import { auth } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
-
-console.log("Imported DB:", db);
-
 
 export async function POST(
     req:Request,
 ) {
     try{
+        const { userId, role } = await auth();
+        const { title } = await req.json();
 
-        console.log("DB VALUE:", db);
-
-        const {userId} =await auth();
-        const {title}=await req.json();
-
-        if(!userId) {
+        if(!userId || !isTeacher(role)) {
             return new NextResponse("Unauthorized", {status:401});
         }
 
@@ -28,13 +21,9 @@ export async function POST(
             }
         });
             
-        
-
         return NextResponse.json(course);
     }catch(error){
         console.log("[COURSES]",error);
         return new NextResponse("Internal Error",{status:500});
     }
 }
-
-

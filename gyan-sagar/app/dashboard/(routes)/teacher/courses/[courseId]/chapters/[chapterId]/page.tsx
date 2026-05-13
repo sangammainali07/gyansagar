@@ -1,6 +1,6 @@
 import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -19,7 +19,7 @@ const ChapterIdPage = async ({
     const { courseId, chapterId } = await params;
     const { userId } = await auth();
     if (!userId) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
 
     const chapter = await db.chapter.findUnique({
@@ -33,8 +33,8 @@ const ChapterIdPage = async ({
     });
 
     if (!chapter) {
-        return redirect("/dashboard");
-    };
+        return redirect("/");
+    }
 
     const requiredFields = [
         chapter.title,

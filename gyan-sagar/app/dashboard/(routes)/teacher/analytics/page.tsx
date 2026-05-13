@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { redirect } from "next/navigation";
 
 import { getAnalytics } from "@/actions/get-analytics";
@@ -10,7 +10,7 @@ const AnalyticsPage = async () => {
     const {userId} = await auth();
 
     if(!userId) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
 
     const {

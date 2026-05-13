@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { isTeacher } from "@/lib/teacher";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -10,10 +10,10 @@ export async function POST(
   const { courseId } = await params;
 
     try{
-        const {userId} = await auth();
+        const { userId, role } = await auth();
         const {url} = await req.json();
 
-        if(!userId ) {
+        if(!userId || !isTeacher(role)) {
             return new NextResponse("Unauthorized",{status:401})
         }
         const courseOwner = await db.course.findUnique({

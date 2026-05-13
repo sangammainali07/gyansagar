@@ -1,47 +1,4 @@
-// import { auth } from "@clerk/nextjs/server";
-// import { NextResponse } from "next/server"
-// import { db } from "@/lib/db";
-
-// export async function DELETE(
-//     req:Request,
-//     { params }: { params: Promise<{ courseId:string, attachmentId:string }> }
-// ) {
-
-//     try{
-//         const {userId} = await auth();
-
-//         if(!userId) {
-//             return new NextResponse("Unauthorized", {status:401});
-//         }
-
-//         const courseOwner = await db.course.findUnique({
-//             where:{
-//                 id:courseId,
-//                 userId:userId,
-//             }
-//         });
-
-//         if(!courseOwner) {
-//             return new NextResponse("Unauthorized", {status:401})
-//         }
-
-//         const attachment = await db.attachment.delete({
-//             where:{
-//                 courseId:courseId,
-//                 id:attachmentId,
-//             }
-//         })
-
-//     } catch(error){
-//         console.log("ATTACHMENT_ID",error)
-//         return new NextResponse("Internal Error", {status:500});
-//     }
-// }
-
-
-
-
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { isTeacher } from "@/lib/teacher";
@@ -53,10 +10,10 @@ export async function DELETE(
   const { courseId, attachmentId } = await params;
 
   try {
-    const { userId } = await auth();
+    const { userId, role } = await auth();
 
-    // 1️⃣ Check if user is logged in
-    if (!userId || !isTeacher(userId)) {
+    // 1️⃣ Check if user is logged in and is a teacher
+    if (!userId || !isTeacher(role)) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 

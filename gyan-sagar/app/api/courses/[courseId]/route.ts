@@ -1,6 +1,6 @@
 import Mux from "@mux/mux-node";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 
 const muxClient = new Mux({

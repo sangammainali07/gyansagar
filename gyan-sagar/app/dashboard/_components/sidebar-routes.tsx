@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart, Compass, Layout, List } from "lucide-react"
+import { BarChart, Compass, Layout, List, Settings } from "lucide-react"
 import { usePathname } from "next/navigation";
 import { SidebarItem } from "./Sidebar-item";
 
@@ -14,6 +14,11 @@ const guestRoutes = [
         icon: Compass,
         label: "Browse",
         href: "/dashboard/search",
+    },
+    {
+        icon: List,
+        label: "Highest Selling",
+        href: "/dashboard/highest-selling",
     },
 ];
 

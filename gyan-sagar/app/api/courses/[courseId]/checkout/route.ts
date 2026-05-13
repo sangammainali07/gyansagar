@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
@@ -14,7 +14,7 @@ export async function POST(
     // 1️⃣ Get current user
     const user = await currentUser();
 
-    if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress) {
+    if (!user || !user.id || !user.email) {
       return new Response("Unauthorized", { status: 401 });
     }
 
@@ -55,7 +55,7 @@ export async function POST(
 
     if (!stripeCustomer) {
       const customer = await stripe.customers.create({
-        email: user.emailAddresses[0].emailAddress,
+        email: user.email,
       });
 
       stripeCustomer = await db.stripeCustomer.create({
@@ -81,20 +81,21 @@ export async function POST(
       },
     ];
 
+    const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL;
+
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomer.stripeCustomerId,
-    //   payment_method_types: ["card"],
       mode: "payment",
       line_items,
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?canceled=true`,
-        metadata: {
-            courseId: course.id,
-            userId: user.id,
-        }
+      success_url: `${origin}/courses/${course.id}?success=true`,
+      cancel_url: `${origin}/courses/${course.id}?canceled=true`,
+      metadata: {
+        courseId: course.id,
+        userId: user.id,
+      }
     });
 
-    return NextResponse.json({ url:session.url });
+    return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("[COURSE_ID_CHECKOUT_ERROR]", error);
     return new Response("Internal Server Error", { status: 500 });

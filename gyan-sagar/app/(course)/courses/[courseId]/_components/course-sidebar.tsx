@@ -1,5 +1,5 @@
 import { Chapter, Course, UserProgress } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { CourseSidebarItem } from "./course-sidebar-item"
@@ -20,7 +20,7 @@ export const CourseSidebar = async ({course, progressCount}:CourseSidebarProps) 
 
 
     if(!userId) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
 
 

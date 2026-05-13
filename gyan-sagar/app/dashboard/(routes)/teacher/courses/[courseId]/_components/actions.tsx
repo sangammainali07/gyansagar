@@ -33,12 +33,14 @@ export const Actions = ({ disabled, courseId, isPublished }: ActionsProps) => {
             if (isPublished) {
                 await axios.patch(`/api/courses/${courseId}/unpublish`);
                 toast.success("Course Unpublished");
+                router.refresh();
             } else {
                 await axios.patch(`/api/courses/${courseId}/publish`);
                 toast.success("Course Published");
                 confetti.onOpen();
+                // Redirect to the public course player after publishing
+                router.push(`/courses/${courseId}`);
             }
-            router.refresh();
         } catch (error: any) {
             console.log(error);
             toast.error(error.response?.data || "Something went wrong.");

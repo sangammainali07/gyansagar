@@ -1,5 +1,5 @@
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { getProgress } from "@/actions/get-progress";
@@ -12,7 +12,7 @@ const CourseLayout = async ({children,params}:{children:React.ReactNode; params:
     const {userId} = await auth();
 
     if(!userId) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
 
     const course = await db.course.findUnique({
@@ -43,8 +43,8 @@ const CourseLayout = async ({children,params}:{children:React.ReactNode; params:
     });
 
     if(!course) {
-        return redirect("/dashboard");
-    };
+        return redirect("/");
+    }
 
 
     const progressCount = await getProgress(userId, course.id);

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { getChapter } from "@/actions/get-chapter";
 import { Banner } from "@/components/banner";
 import { VideoPlayer } from "./_components/video-player";
@@ -20,7 +20,7 @@ const ChapterIdPage = async(
     const {userId} = await auth();
 
     if(!userId) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
 
     const {
@@ -38,7 +38,7 @@ const ChapterIdPage = async(
     });
 
     if(!chapter || !course) {
-        return redirect("/dashboard");
+        return redirect("/");
     }
 
     const isLocked = !chapter.isFree && !purchase;

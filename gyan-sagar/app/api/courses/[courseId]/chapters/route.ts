@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-helper";
 import { NextResponse } from "next/server";
 import { isTeacher } from "@/lib/teacher";
 
@@ -10,10 +10,10 @@ export async function POST(
   const { courseId } = await params;
 
     try{
-        const {userId} = await auth();
+        const { userId, role } = await auth();
          const {title} = await req.json();
 
-         if(!userId) {
+         if(!userId || !isTeacher(role)) {
             return new NextResponse("Unauthorized", {status:401});
          }
 
