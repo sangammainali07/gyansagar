@@ -19,6 +19,7 @@ export const {
     error: "/error",
   },
   secret: process.env.AUTH_SECRET,
+  trustHost: true,
   events: {
     async linkAccount({ user }) {
       await db.user.update({
@@ -46,6 +47,7 @@ export const {
       }
       if (session.user) {
         session.user.hasRole = token.hasRole as boolean;
+        session.user.hasPassword = token.hasPassword as boolean;
       }
       return session;
     },
@@ -63,6 +65,7 @@ export const {
 
       token.role = existingUser.role;
       token.hasRole = !!existingUser.role;
+      token.hasPassword = !!existingUser.password;
 
       return token;
     },

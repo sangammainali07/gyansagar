@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/auth.config";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -53,6 +55,12 @@ export const LoginForm = () => {
           if (data?.error) {
             form.reset();
             setError(data.error);
+          }
+          if (data?.success) {
+            setSuccess(data.success);
+          }
+          if (data?.redirect) {
+            router.push(data.redirect);
           }
         })
         .catch(() => setError("Something went wrong"));

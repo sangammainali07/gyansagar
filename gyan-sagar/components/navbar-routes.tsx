@@ -14,6 +14,7 @@ interface NavbarRoutesProps {
     role?: any;
     image?: string | null;
     name?: string | null;
+    hasPassword?: boolean;
   } | null;
 }
 
@@ -52,6 +53,7 @@ export const NavbarRoutes = ({ user }: NavbarRoutesProps) => {
           <UserButton 
             userImage={user.image} 
             userName={user.name} 
+            hasPassword={user.hasPassword}
           />
         )}
       </div>

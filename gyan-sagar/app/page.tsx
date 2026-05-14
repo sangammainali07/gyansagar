@@ -76,7 +76,7 @@ export default function LandingPage() {
                     <div className="navbar-nav flex flex-col lg:flex-row items-center justify-center gap-6 mt-6 lg:mt-0">
                       {session?.user ? (
                         <div className="flex items-center justify-center h-full">
-                          <UserButton userImage={session.user.image} userName={session.user.name} />
+                          <UserButton userImage={session.user.image} userName={session.user.name} hasPassword={session.user.hasPassword} />
                         </div>
                       ) : (
                         <>

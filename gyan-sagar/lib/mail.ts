@@ -86,3 +86,18 @@ export const sendPasswordChangedConfirmationEmail = async (
     `
   });
 };
+
+export const sendAccountDeletionEmail = async (
+  email: string,
+) => {
+  await transporter.sendMail({
+    from: emailFrom,
+    to: email,
+    subject: "Account Deleted Successfully",
+    html: `
+      <h1>Account Deletion Confirmation</h1>
+      <p>Your account has been permanently deleted as requested.</p>
+      <p>We are sorry to see you go. If you change your mind, you can always create a new account.</p>
+    `
+  });
+};

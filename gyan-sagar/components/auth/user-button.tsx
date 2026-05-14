@@ -10,13 +10,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
+import { DeleteAccountModal } from "@/components/modals/delete-account-modal";
+import { Trash2 } from "lucide-react";
 
 interface UserButtonProps {
   userImage?: string | null;
   userName?: string | null;
+  hasPassword?: boolean;
 }
 
-export const UserButton = ({ userImage, userName }: UserButtonProps) => {
+export const UserButton = ({ userImage, userName, hasPassword }: UserButtonProps) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
@@ -35,13 +41,26 @@ export const UserButton = ({ userImage, userName }: UserButtonProps) => {
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem 
+          onClick={() => setIsDeleteModalOpen(true)}
+          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50"
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          Delete Me
+        </DropdownMenuItem>
+        <DropdownMenuItem 
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="cursor-pointer text-red-600 focus:text-red-600"
+          className="cursor-pointer"
         >
           <LogOut className="h-4 w-4 mr-2" />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
+      
+      <DeleteAccountModal 
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        hasPassword={hasPassword}
+      />
     </DropdownMenu>
   );
 };
